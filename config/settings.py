@@ -10,9 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import json
-import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,12 +30,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 OWN_APPS = [
     'users',
     'restaurants',
     'reviews',
+    'rest_framework',
 ]
 
 THIRD_PARTY_APPS = [
@@ -82,21 +81,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': SECRET['DB']['NAME'],               # 데이터베이스 이름
-        'USER': SECRET['DB']['USER'],               # 사용자 이름
-        'PASSWORD': SECRET['DB']['PASSWORD'],       # 비밀번호
-        'HOST': SECRET['DB']['HOST'],               # 데이터베이스 서버 주소
-        'PORT': SECRET['DB']['PORT'],               # MySQL의 기본 포트
+        'NAME': SECRET['DB']['NAME'],  # 데이터베이스 이름
+        'USER': SECRET['DB']['USER'],  # 사용자 이름
+        'PASSWORD': SECRET['DB']['PASSWORD'],  # 비밀번호
+        'HOST': SECRET['DB']['HOST'],  # 데이터베이스 서버 주소
+        'PORT': SECRET['DB']['PORT'],  # MySQL의 기본 포트
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -129,7 +126,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -145,3 +141,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    # 1. 인증 방식 설정
+    # 세션 기반 인증 (Django 로그인 시스템과 연동)
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+
+    # 2. 권한 설정
+    # 인증된 사용자: 모든 요청 가능
+    # 미인증 사용자: 읽기 전용(GET, HEAD, OPTIONS)
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}
